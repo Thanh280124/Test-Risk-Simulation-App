@@ -85,12 +85,20 @@ th {
     background: #4CAF50;
     color: white;
     border: none;
-    display: inline-block; /* Ensure visibility by default */
+    display: inline-block;
 }
 
 .button-action:disabled {
     background: #cccccc;
     cursor: not-allowed;
+}
+
+.remove-button {
+    padding: 5px 10px;
+    background: #ff4444;
+    color: white;
+    border: none;
+    cursor: pointer;
 }
 
 body {

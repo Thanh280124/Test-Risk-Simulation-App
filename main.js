@@ -70,7 +70,9 @@ function startGame() {
         var dateString = formatDate(currentDate);
         var timeString = formatTime(currentDate);
         projectNameInput = "Demo " + dateString + " " + timeString;
-        generateCheatRisks();
+        if (risks.length === 0) { // Only generate cheat risks if none exist yet
+            generateCheatRisks();
+        }
     }
 
     var riskContingencyBudget = (riskContingencyPercentage / 100) * projectBudget;
@@ -88,9 +90,12 @@ function startGame() {
 
     document.getElementById('setup').classList.add('hidden');
     document.getElementById('game').classList.remove('hidden');
-    document.getElementById('backButtonGame').disabled = false; // Ensure enabled
-    document.getElementById('backButtonGame').style.display = 'inline-block'; // Ensure visible
+    document.getElementById('backButtonGame').disabled = false;
+    document.getElementById('backButtonGame').style.display = 'inline-block';
     updateRiskTable();
+    if (risks.length >= 3) {
+        document.getElementById('exportButton').classList.remove('hidden');
+    }
 }
 
 function generateCheatRisks() {
@@ -170,6 +175,14 @@ function addRisk() {
     }
 }
 
+function removeRisk(index) {
+    risks.splice(index, 1);
+    updateRiskTable();
+    if (risks.length < 3) {
+        document.getElementById('exportButton').classList.add('hidden');
+    }
+}
+
 function getRiskLevel(score) {
     if (score <= 4) return "Low";
     else if (score <= 9) return "Medium";
@@ -190,9 +203,10 @@ function updateRiskTable() {
             <th>Risk Score</th>
             <th>Risk Level</th>
             <th>Risk Response</th>
+            <th>Action</th>
         </tr>
     `;
-    risks.forEach(function(risk) {
+    risks.forEach(function(risk, index) {
         var row = table.insertRow();
         var riskLevelClass = getRiskLevelClass(risk.level);
         row.innerHTML = `
@@ -205,6 +219,7 @@ function updateRiskTable() {
             <td>${risk.score}</td>
             <td class="${riskLevelClass}">${risk.level}</td>
             <td class="left-align">${risk.responseDescription}</td>
+            <td><button class="remove-button" onclick="removeRisk(${index})">Remove</button></td>
         `;
     });
 }
@@ -524,8 +539,7 @@ function goBack() {
     if (!document.getElementById('game').classList.contains('hidden')) {
         document.getElementById('game').classList.add('hidden');
         document.getElementById('setup').classList.remove('hidden');
-        risks = [];
-        updateRiskTable();
+        // Do not clear risks here to preserve them
         document.getElementById('exportButton').classList.add('hidden');
     } else {
         alert("Cannot go back after starting the game or during simulation.");
@@ -547,7 +561,7 @@ function tryAgain() {
     document.getElementById('setup').classList.remove('hidden');
     document.getElementById('game').classList.add('hidden');
     document.getElementById('simulation').classList.add('hidden');
-    document.getElementById('backButtonGame').disabled = true; // Disable on setup page
+    document.getElementById('backButtonGame').disabled = true;
     document.getElementById('projectName').value = "";
     document.getElementById('projectBudget').value = "100";
     document.getElementById('projectDuration').value = "24";
