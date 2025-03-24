@@ -88,11 +88,13 @@ function startGame() {
 
     document.getElementById('setup').classList.add('hidden');
     document.getElementById('game').classList.remove('hidden');
+    document.getElementById('backButtonGame').disabled = false; // Ensure enabled
+    document.getElementById('backButtonGame').style.display = 'inline-block'; // Ensure visible
     updateRiskTable();
 }
 
 function generateCheatRisks() {
-    risks = []; // Clear existing risks for cheat
+    risks = [];
     var cheatRisks = [
         { name: "Requirement Creep", type: "Scope", likelihood: 4, impact: 3, minCost: 5000, costPercentage: 5, responseDescription: "Implement agile practices." },
         { name: "Technical Debt", type: "Technical", likelihood: 3, impact: 4, minCost: 4000, costPercentage: 4, responseDescription: "Plan refactoring cycles." },
@@ -163,7 +165,6 @@ function addRisk() {
     document.getElementById('costPercentage').value = "5";
     document.getElementById('riskResponseDescription').value = "";
 
-    // Show export button after 3 risks
     if (risks.length >= 3) {
         document.getElementById('exportButton').classList.remove('hidden');
     }
@@ -520,14 +521,12 @@ function setupHelpModal() {
 }
 
 function goBack() {
-    // Check if we're on the risk addition page (#game)
     if (!document.getElementById('game').classList.contains('hidden')) {
-        // Reset to setup page
         document.getElementById('game').classList.add('hidden');
         document.getElementById('setup').classList.remove('hidden');
-        risks = []; // Clear risks when going back
-        updateRiskTable(); // Reset risk table
-        document.getElementById('exportButton').classList.add('hidden'); // Hide export button
+        risks = [];
+        updateRiskTable();
+        document.getElementById('exportButton').classList.add('hidden');
     } else {
         alert("Cannot go back after starting the game or during simulation.");
     }
@@ -548,7 +547,7 @@ function tryAgain() {
     document.getElementById('setup').classList.remove('hidden');
     document.getElementById('game').classList.add('hidden');
     document.getElementById('simulation').classList.add('hidden');
-    document.getElementById('backButtonSetup').disabled = false;
+    document.getElementById('backButtonGame').disabled = true; // Disable on setup page
     document.getElementById('projectName').value = "";
     document.getElementById('projectBudget').value = "100";
     document.getElementById('projectDuration').value = "24";

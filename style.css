@@ -85,6 +85,7 @@ th {
     background: #4CAF50;
     color: white;
     border: none;
+    display: inline-block; /* Ensure visibility by default */
 }
 
 .button-action:disabled {
