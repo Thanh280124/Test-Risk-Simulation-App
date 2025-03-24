@@ -88,7 +88,6 @@ function startGame() {
 
     document.getElementById('setup').classList.add('hidden');
     document.getElementById('game').classList.remove('hidden');
-    document.getElementById('backButtonSetup').disabled = true;
     updateRiskTable();
 }
 
@@ -521,10 +520,16 @@ function setupHelpModal() {
 }
 
 function goBack() {
-    if (document.getElementById('setup').classList.contains('hidden')) {
-        alert("Cannot go back during gameplay.");
+    // Check if we're on the risk addition page (#game)
+    if (!document.getElementById('game').classList.contains('hidden')) {
+        // Reset to setup page
+        document.getElementById('game').classList.add('hidden');
+        document.getElementById('setup').classList.remove('hidden');
+        risks = []; // Clear risks when going back
+        updateRiskTable(); // Reset risk table
+        document.getElementById('exportButton').classList.add('hidden'); // Hide export button
     } else {
-        window.location.reload();
+        alert("Cannot go back after starting the game or during simulation.");
     }
 }
 
