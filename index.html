@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Risk Simulation Game for Software Engineering</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <button id="helpButton">Help</button>
+    <img src="https://www.vamk.fi/wp-content/themes/design-by-buorre-child-vamk/img/vamk_logo_notext.svg" alt="VAMK Logo">
+    <h1>Risk Simulation Game for Software Engineering</h1>
+    <p>In this interactive simulation, you manage a software project by identifying and handling risks. Created by Thomas Vikström (v.0.1 - 10.2.2025 19:00)</p>
+
+    <div id="setup">
+        <h2>Project Setup</h2>
+        <label for="projectName">Project Name:</label>
+        <input type="text" id="projectName"><br>
+        <label for="projectBudget">Project Budget (in €k):</label>
+        <input type="number" id="projectBudget" value="100"><br>
+        <label for="projectDuration">Project Duration (months):</label>
+        <input type="number" id="projectDuration" value="24"><br>
+        <label for="baselineCost">Baseline Cost per Turn (in €k):</label>
+        <input type="number" id="baselineCost" readonly><br>
+        <label for="riskContingencyPercentage">Risk Contingency Budget (%):</label>
+        <input type="number" id="riskContingencyPercentage" value="10"><br>
+        <button class="button-action" onclick="startGame()">Start Game</button>
+        <button id="backButtonSetup" class="button-action" onclick="goBack()">Back</button>
+    </div>
+
+    <div id="game" class="hidden">
+        <h2>Add a Risk (Max 5 risks!)</h2>
+        <label for="riskName">Risk Name:</label>
+        <input type="text" id="riskName" placeholder="e.g., Requirement Creep"><br>
+        <label for="riskType">Risk Type:</label>
+        <select id="riskType">
+            <option value="Technical">Technical</option>
+            <option value="Operational">Operational</option>
+            <option value="Security">Security</option>
+            <option value="Scope">Scope</option>
+            <option value="Management">Management</option>
+        </select><br>
+        <label for="likelihood">Likelihood (1-5):</label>
+        <input type="number" id="likelihood" min="1" max="5" value="3"><br>
+        <label for="impact">Impact (1-5):</label>
+        <input type="number" id="impact" min="1" max="5" value="3"><br>
+        <label for="minCost">Minimum Cost if Occurs (€):</label>
+        <input type="number" id="minCost" value="5000"><br>
+        <label for="costPercentage">Cost as % of Budget:</label>
+        <input type="number" id="costPercentage" value="5"><br>
+        <label for="riskResponseDescription">Risk Response Description:</label>
+        <input type="text" id="riskResponseDescription" placeholder="e.g., Implement agile practices"><br>
+        <button class="button-action" onclick="addRisk()">Add Risk</button>
+
+        <h2>Risk Register</h2>
+        <div>
+            <button class="button-action" onclick="proceedToSimulation()">Proceed to Simulation</button>
+            <button id="exportButton" class="button-action hidden" onclick="exportRiskRegister()">Export to CSV</button>
+        </div>
+        <table id="riskTable">
+            <tr>
+                <th>Risk Name</th>
+                <th>Type</th>
+                <th>Likelihood</th>
+                <th>Impact</th>
+                <th>Min Cost (€)</th>
+                <th>Cost (%)</th>
+                <th>Risk Score</th>
+                <th>Risk Level</th>
+                <th>Risk Response</th>
+            </tr>
+        </table>
+    </div>
+
+    <div id="simulation" class="hidden">
+        <h2>Simulation</h2>
+        <p id="realTimeScore">Current Score: <span id="scoreValue">0%</span></p>
+        <p id="simulationInfo"></p>
+        <div id="riskEvent" class="hidden">
+            <h3>Risk Event Occurred!</h3>
+            <div id="riskEventDescription"></div>
+            <label for="riskResponse">Choose Your Response:</label>
+            <select id="riskResponse">
+                <option value="">--Select an Action--</option>
+                <option value="Mitigate">Mitigate</option>
+                <option value="Avoid">Avoid</option>
+                <option value="Transfer">Transfer</option>
+                <option value="Accept">Accept</option>
+            </select><br>
+            <div id="responseExplanation"></div>
+            <button class="button-action" onclick="respondToRisk()">Respond</button>
+        </div>
+        <button id="nextTurnButton" class="button-action" onclick="nextTurn()">Next Turn</button>
+
+        <h2>Project Status</h2>
+        <div>
+            <span>Budget Remaining:</span>
+            <div class="progress-container"><div id="budgetProgress" class="progress"></div></div>
+        </div>
+        <div>
+            <span>Project Quality:</span>
+            <div class="progress-container"><div id="qualityProgress" class="progress"></div></div>
+        </div>
+        <div>
+            <span>Risk Contingency Remaining:</span>
+            <div class="progress-container"><div id="riskContingencyProgress" class="progress"></div></div>
+        </div>
+        <p id="projectStatus"></p>
+        <div id="charts">
+            <svg id="budgetChartSvg" width="400" height="200"></svg>
+            <svg id="qualityChartSvg" width="400" height="200"></svg>
+        </div>
+    </div>
+
+    <div id="finalResult" class="hidden">
+        <h2>Simulation Results</h2>
+        <div id="finalProjectInfo"></div>
+        <h3>Your Overall Score</h3>
+        <p id="finalScore"></p>
+        <div id="performanceLog"></div>
+        <button class="button-action" onclick="window.print()">Print Results</button>
+        <button class="button-action" onclick="exportPerformanceLog()">Export Log</button>
+        <button class="button-action" onclick="tryAgain()">Try It Again</button>
+    </div>
+
+    <div id="helpModal" class="modal">
+        <div class="modal-content">
+            <span class="close">×</span>
+            <h2>How to Play the Risk Simulation Game</h2>
+            <p>Manage a software project by handling risks! Here's how:</p>
+            <h3>Steps</h3>
+            <ol>
+                <li><strong>Setup</strong>: Name your project, set budget (€k), duration (months), and contingency (%). Click "Start Game."</li>
+                <li><strong>Add Risks</strong>: Add exactly 5 risks with details like likelihood (1-5) and impact (1-5). Export available after 3. Proceed when done.</li>
+                <li><strong>Simulation</strong>: Each turn (month), risks may occur. Respond with Mitigate, Avoid, Transfer, or Accept.</li>
+                <li><strong>Track Progress</strong>: Watch budget, quality, and contingency. Finish with positive budget and quality above 50% to win!</li>
+            </ol>
+            <h3>Tips</h3>
+            <ul>
+                <li>Balance your budget—don’t overspend early.</li>
+                <li>Choose responses wisely based on risk severity.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
