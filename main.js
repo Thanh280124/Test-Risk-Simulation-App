@@ -444,9 +444,9 @@ function calculateFinalScore() {
 function getGrade(score) {
     if (score >= 90) return "5 (Excellent)";
     else if (score >= 75) return "4 (Good)";
-    else if (score >= 60) return "3 (Satisfactory)";
-    else if (score >= 40) return "2 (Needs Improvement)";
-    else if (score >= 20) return "1 (Poor)";
+    else if (score >= 55) return "3 (Satisfactory)";
+    else if (score >= 35) return "2 (Needs Improvement)";
+    else if (score >= 15) return "1 (Poor)";
     else return "0 (Fail)";
 }
 
