@@ -528,7 +528,7 @@ function exportPerformanceLog() {
 function setupHelpModal() {
     var modal = document.getElementById('helpModal');
     var btn = document.getElementById('helpButton');
-    var span = document.getElementsByClassName('close')[0];
+    var span = document.querySelector('.close');
     btn.onclick = function() { modal.style.display = "block"; };
     span.onclick = function() { modal.style.display = "none"; };
     window.onclick = function(event) {
