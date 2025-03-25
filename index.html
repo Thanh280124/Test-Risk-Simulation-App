@@ -74,6 +74,7 @@
 
     <div id="simulation" class="hidden">
         <h2>Simulation</h2>
+        <button id="exportButton" class="button-action hidden" onclick="exportRiskRegister()">Export to CSV</button>
         <p id="realTimeScore">Current Score: <span id="scoreValue">0%</span></p>
         <p id="simulationInfo"></p>
         <div id="riskEvent" class="hidden">
@@ -113,14 +114,6 @@
     </div>
 
     <div id="finalResult" class="hidden">
-        <h2>Simulation Results</h2>
-        <div id="finalProjectInfo"></div>
-        <h3>Your Overall Score</h3>
-        <p id="finalScore"></p>
-        <div id="performanceLog"></div>
-        <button class="button-action" onclick="window.print()">Print Results</button>
-        <button class="button-action" onclick="exportPerformanceLog()">Export Log</button>
-        <button class="button-action" onclick="tryAgain()">Try It Again</button>
     </div>
 
     <div id="helpModal" class="modal">
