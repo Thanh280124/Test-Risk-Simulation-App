@@ -50,41 +50,61 @@ function updateBaselineCost() {
 }
 
 function startGame() {
-    var projectNameInput = document.getElementById('projectName').value.trim().toLowerCase();
-    var projectBudget = parseFloat(document.getElementById('projectBudget').value) * 1000;
-    var projectDuration = parseInt(document.getElementById('projectDuration').value);
-    var baselineCostPerTurn = parseFloat(document.getElementById('baselineCost').value) * 1000;
-    var riskContingencyPercentage = parseFloat(document.getElementById('riskContingencyPercentage').value);
+    let projectNameInput = document.getElementById('projectName');
+    let projectBudget = document.getElementById('projectBudget');
+    let projectDuration = document.getElementById('projectDuration');
+    let baselineCostPerTurn = document.getElementById('baselineCost');
+    let riskContingencyPercentage = document.getElementById('riskContingencyPercentage');
 
-    if (projectNameInput === "") {
+    let projectNameValue = projectNameInput.value.trim().toLowerCase();
+    let projectBudgetValue = parseFloat(projectBudget.value) * 1000;
+    let projectDurationValue = parseInt(projectDuration.value);
+    let baselineCostPerTurnValue = parseFloat(baselineCostPerTurn.value) * 1000;
+    let riskContingencyPercentageValue = parseFloat(riskContingencyPercentage.value);
+
+
+    if (projectNameValue === "") {
         alert("Please enter a project name.");
         return;
     }
-    if (isNaN(baselineCostPerTurn) || baselineCostPerTurn <= 0) {
-        alert("Invalid Baseline Cost per Turn.");
+    if (isNaN(projectBudgetValue) || projectBudgetValue <= 0) {
+        alert("Invalid Project Budget. Please enter a positive number.");
+        return;
+    }
+    if (isNaN(projectDurationValue) || projectDurationValue <= 0) {
+        alert("Invalid Project Duration. Please enter a positive integer.");
+        return;
+    }
+    if (isNaN(baselineCostPerTurnValue) || baselineCostPerTurnValue <= 0) {
+        alert("Invalid Baseline Cost per Turn. Please enter a positive number.");
+        return;
+    }
+    if (isNaN(riskContingencyPercentageValue) || riskContingencyPercentageValue < 0) {
+        alert("Invalid Risk Contingency Percentage. Please enter a non-negative number.");
         return;
     }
 
-    if (projectNameInput === "tv" || projectNameInput === "risk") {
-        var currentDate = new Date();
-        var dateString = formatDate(currentDate);
-        var timeString = formatTime(currentDate);
-        projectNameInput = "Demo " + dateString + " " + timeString;
-        if (risks.length === 0) { // Only generate cheat risks if none exist yet
+    if (projectNameValue === "tv" || projectNameValue === "risk") {
+        let currentDate = new Date();
+        let dateString = formatDate(currentDate);
+        let timeString = formatTime(currentDate);
+        projectNameValue = "Demo " + dateString + " " + timeString;
+        if (risks.length === 0) { 
             generateCheatRisks();
         }
     }
 
-    var riskContingencyBudget = (riskContingencyPercentage / 100) * projectBudget;
+    var riskContingencyBudget = (riskContingencyPercentageValue / 100) * projectBudgetValue;
+
     project = {
-        name: projectNameInput,
-        budget: projectBudget,
-        originalBudget: projectBudget,
+        name: projectNameValue,
+        budget: projectBudgetValue,
+        originalBudget: projectBudgetValue,
         riskContingencyBudget: riskContingencyBudget,
         originalRiskContingencyBudget: riskContingencyBudget,
-        baselineCostPerTurn: baselineCostPerTurn,
-        duration: projectDuration,
-        originalDuration: projectDuration,
+        baselineCostPerTurn: baselineCostPerTurnValue,
+        duration: projectDurationValue,
+        originalDuration: projectDurationValue,
         quality: 100
     };
 
