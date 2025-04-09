@@ -7,6 +7,8 @@ var qualityData = [];
 var turnLabels = [];
 var currentRiskEvent = null;
 var performanceLog = [];
+var budgetChartInstance = null;
+var qualityChartInstance = null;
 
 window.onload = function() {
     setDefaultProjectName();
@@ -62,25 +64,44 @@ function startGame() {
     let baselineCostPerTurnValue = parseFloat(baselineCostPerTurn.value) * 1000;
     let riskContingencyPercentageValue = parseFloat(riskContingencyPercentage.value);
 
-
     if (projectNameValue === "") {
-        alert("Please enter a project name.");
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...,Error',
+            text: 'Please enter a project name.',
+        });
         return;
     }
     if (isNaN(projectBudgetValue) || projectBudgetValue <= 0) {
-        alert("Invalid Project Budget. Please enter a positive number.");
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Input',
+            text: 'Invalid Project Budget. Please enter a positive number.',
+        });
         return;
     }
     if (isNaN(projectDurationValue) || projectDurationValue <= 0) {
-        alert("Invalid Project Duration. Please enter a positive integer.");
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Input',
+            text: 'Invalid Project Duration. Please enter a positive integer.',
+        });
         return;
     }
     if (isNaN(baselineCostPerTurnValue) || baselineCostPerTurnValue <= 0) {
-        alert("Invalid Baseline Cost per Turn. Please enter a positive number.");
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Input',
+            text: 'Invalid Baseline Cost per Turn. Please enter a positive number.',
+        });
         return;
     }
     if (isNaN(riskContingencyPercentageValue) || riskContingencyPercentageValue < 0) {
-        alert("Invalid Risk Contingency Percentage. Please enter a non-negative number.");
+        Swal.fire({
+            icon: 'error',
+            title: 'Invalid Input',
+            text: 'Invalid Risk Contingency Percentage. Please enter a non-negative number.',
+        });
         return;
     }
 
@@ -89,7 +110,7 @@ function startGame() {
         let dateString = formatDate(currentDate);
         let timeString = formatTime(currentDate);
         projectNameValue = "Demo " + dateString + " " + timeString;
-        if (risks.length === 0) { 
+        if (risks.length === 0) {
             generateCheatRisks();
         }
     }
@@ -110,8 +131,8 @@ function startGame() {
 
     document.getElementById('setup').classList.add('hidden');
     document.getElementById('game').classList.remove('hidden');
-    document.getElementById('backButtonGame').disabled = false;
-    document.getElementById('backButtonGame').style.display = 'inline-block';
+    document.getElementById('gameBackButton').disabled = false;
+    document.getElementById('gameBackButton').style.display = 'inline-block';
     updateRiskTable();
     if (risks.length >= 3) {
         document.getElementById('exportButton').classList.remove('hidden');
@@ -148,7 +169,11 @@ function generateCheatRisks() {
 
 function addRisk() {
     if (risks.length >= 5) {
-        alert("Maximum of 5 risks reached!");
+        Swal.fire({
+            icon: 'warning',
+            title: 'Limit Reached',
+            text: 'Maximum of 5 risks reached!',
+        });
         return;
     }
 
@@ -161,11 +186,19 @@ function addRisk() {
     var riskResponseDescription = document.getElementById('riskResponseDescription').value;
 
     if (riskName === "") {
-        alert("Please enter a risk name.");
+        Swal.fire({
+            icon: 'error',
+            title: 'Missing Input',
+            text: 'Please enter a risk name.',
+        });
         return;
     }
     if (riskResponseDescription.trim() === "") {
-        alert("Please enter a risk response description.");
+        Swal.fire({
+            icon: 'error',
+            title: 'Missing Input',
+            text: 'Please enter a risk response description.',
+        });
         return;
     }
 
@@ -256,7 +289,11 @@ function getRiskLevelClass(level) {
 
 function proceedToSimulation() {
     if (risks.length !== 5) {
-        alert("Please add exactly 5 risks before proceeding.");
+        Swal.fire({
+            icon: 'warning',
+            title: 'Incomplete Risks',
+            text: 'Please add exactly 5 risks before proceeding.',
+        });
         return;
     }
     document.getElementById('game').classList.add('hidden');
@@ -266,21 +303,39 @@ function proceedToSimulation() {
     initializeCharts();
 }
 
-function exportRiskRegister() {
+
+function exportRiskRegisterToExcel() {
     if (risks.length === 0) {
-        alert("No risks to export.");
+        Swal.fire({
+            icon: 'info',
+            title: 'No Data',
+            text: 'No risks to export.',
+        });
         return;
     }
-    let csvContent = "Risk Name,Type,Likelihood,Impact,Min Cost (€),Cost (% of Budget),Risk Score,Risk Level,Risk Response Description\n";
+    const ws_data = [
+        ["Risk Name", "Type", "Likelihood", "Impact", "Min Cost (€)", "Cost (% of Budget)", "Risk Score", "Risk Level", "Risk Response Description"]
+    ];
     risks.forEach(risk => {
-        csvContent += `${risk.name},${risk.type},${risk.likelihood},${risk.impact},${risk.minCost},${risk.costPercentage}%,${risk.score},${risk.level},${risk.responseDescription}\n`;
+        ws_data.push([
+            risk.name,
+            risk.type,
+            risk.likelihood,
+            risk.impact,
+            risk.minCost,
+            `${risk.costPercentage}%`,
+            risk.score,
+            risk.level,
+            risk.responseDescription
+        ]);
     });
+
+    // Create a workbook and add the worksheet
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Risk Register");
     const timestamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-");
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `risk_register_${timestamp}.csv`;
-    link.click();
+    XLSX.writeFile(wb, `risk_register_${timestamp}.xlsx`);
 }
 
 function nextTurn() {
@@ -330,7 +385,11 @@ function checkForRiskEvent() {
 function respondToRisk() {
     var response = document.getElementById('riskResponse').value;
     if (response === "") {
-        alert("Please select a risk response action.");
+        Swal.fire({
+            icon: 'error',
+            title: 'No Action Selected',
+            text: 'Please select a risk response action.',
+        });
         return;
     }
 
@@ -431,9 +490,9 @@ function finalizeGame(isSuccess) {
 
     let message = isSuccess ?
         `<h2>Congratulations! Project Completed</h2><p>You delivered the project successfully.</p><img src="https://media0.giphy.com/media/hcnh1VGMNW3Sb8c5aX/giphy.gif" alt="Success">` :
-        `<h2>Game Over: Project Failed</h2><p>${project.budget <= 0 ? "Out of budget" : "Quality too low"}</p><img src="https://media1.giphy.com/media/BGlGy3pD9THOFVzdtf/giphy.gif" alt="Failure">`;
+        `<h2>Game Over: Project Failed</h2><p>${project.budget <= 0 ? "Out of budget" : "Quality too low"}</p><img src="https://media1.giphy.com/media/BGlGy3pD9THOFVzdtf/giphy.gif" class='result-img' alt="Failure">`;
 
-    let logHtml = "<h3>Performance Log</h3><ul>";
+    let logHtml = "<h3>Performance Log</h3><ul class='performance-log'>";
     performanceLog.forEach(entry => {
         logHtml += `<li>Turn ${entry.turn}: Risk "${entry.risk}" - Response: ${entry.response} - Cost: €${entry.costImpact.toLocaleString()} - Quality: ${entry.quality}%</li>`;
     });
@@ -448,8 +507,8 @@ function finalizeGame(isSuccess) {
         ${logHtml}
         <button class="button-action" onclick="window.print()">Print Results</button>
         <button class="button-action" onclick="exportPerformanceLog()">Export Log</button>
-         <button id="exportButton" class="button-action hidden" onclick="exportRiskRegister()">Export to CSV</button>
         <button class="button-action" onclick="tryAgain()">Try It Again</button>
+        <button class="button-action" onclick="exportRiskRegisterToExcel()">Export to Excel</button>
     `;
     document.getElementById('finalResult').classList.remove('hidden');
 }
@@ -472,10 +531,49 @@ function getGrade(score) {
 }
 
 function initializeCharts() {
-    turnLabels.push("0");
-    budgetData.push(project.budget);
-    qualityData.push(project.quality);
-    updateCharts();
+    budgetData = [project.budget];
+    qualityData = [project.quality];
+    turnLabels = ["0"];
+
+    const budgetCtx = document.getElementById('budgetChart').getContext('2d');
+    budgetChartInstance = new Chart(budgetCtx, {
+        type: 'line',
+        data: {
+            labels: turnLabels,
+            datasets: [{
+                label: 'Budget (€)',
+                data: budgetData,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true, max: project.originalBudget }
+            }
+        }
+    });
+
+    const qualityCtx = document.getElementById('qualityChart').getContext('2d');
+    qualityChartInstance = new Chart(qualityCtx, {
+        type: 'line',
+        data: {
+            labels: turnLabels,
+            datasets: [{
+                label: 'Quality (%)',
+                data: qualityData,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true, max: 100 }
+            }
+        }
+    });
 }
 
 function updateCharts() {
@@ -483,35 +581,13 @@ function updateCharts() {
     budgetData.push(project.budget);
     qualityData.push(project.quality);
 
-    const maxBudget = project.originalBudget;
-    const svgWidth = 400, svgHeight = 200, padding = 40;
-    const xScale = (svgWidth - padding * 2) / (turnLabels.length - 1);
-    const yScaleBudget = (svgHeight - padding * 2) / maxBudget;
-    const yScaleQuality = (svgHeight - padding * 2) / 100;
+    budgetChartInstance.data.labels = turnLabels;
+    budgetChartInstance.data.datasets[0].data = budgetData;
+    budgetChartInstance.update();
 
-    const budgetSvg = document.getElementById('budgetChartSvg');
-    budgetSvg.innerHTML = `<text x="180" y="20" text-anchor="middle">Budget (€)</text>`;
-    let budgetPath = `M${padding},${svgHeight - padding - budgetData[0] * yScaleBudget}`;
-    for (let i = 1; i < budgetData.length; i++) {
-        budgetPath += ` L${padding + i * xScale},${svgHeight - padding - budgetData[i] * yScaleBudget}`;
-    }
-    const budgetLine = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    budgetLine.setAttribute("d", budgetPath);
-    budgetLine.setAttribute("stroke", "rgba(75, 192, 192, 1)");
-    budgetLine.setAttribute("fill", "none");
-    budgetSvg.appendChild(budgetLine);
-
-    const qualitySvg = document.getElementById('qualityChartSvg');
-    qualitySvg.innerHTML = `<text x="180" y="20" text-anchor="middle">Quality (%)</text>`;
-    let qualityPath = `M${padding},${svgHeight - padding - qualityData[0] * yScaleQuality}`;
-    for (let i = 1; i < qualityData.length; i++) {
-        qualityPath += ` L${padding + i * xScale},${svgHeight - padding - qualityData[i] * yScaleQuality}`;
-    }
-    const qualityLine = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    qualityLine.setAttribute("d", qualityPath);
-    qualityLine.setAttribute("stroke", "rgba(255, 99, 132, 1)");
-    qualityLine.setAttribute("fill", "none");
-    qualitySvg.appendChild(qualityLine);
+    qualityChartInstance.data.labels = turnLabels;
+    qualityChartInstance.data.datasets[0].data = qualityData;
+    qualityChartInstance.update();
 }
 
 function addRiskResponseListener() {
@@ -560,10 +636,13 @@ function goBack() {
     if (!document.getElementById('game').classList.contains('hidden')) {
         document.getElementById('game').classList.add('hidden');
         document.getElementById('setup').classList.remove('hidden');
-        // Do not clear risks here to preserve them
         document.getElementById('exportButton').classList.add('hidden');
     } else {
-        alert("Cannot go back after starting the game or during simulation.");
+        Swal.fire({
+            icon: 'info',
+            title: 'Navigation Restricted',
+            text: 'Cannot go back after starting the game or during simulation.',
+        });
     }
 }
 
@@ -577,12 +656,14 @@ function tryAgain() {
     turnLabels = [];
     currentRiskEvent = null;
     performanceLog = [];
+    if (budgetChartInstance) budgetChartInstance.destroy();
+    if (qualityChartInstance) qualityChartInstance.destroy();
 
     document.getElementById('finalResult').classList.add('hidden');
     document.getElementById('setup').classList.remove('hidden');
     document.getElementById('game').classList.add('hidden');
     document.getElementById('simulation').classList.add('hidden');
-    document.getElementById('backButtonGame').disabled = true;
+    document.getElementById('gameBackButton').disabled = true;
     document.getElementById('projectName').value = "";
     document.getElementById('projectBudget').value = "100";
     document.getElementById('projectDuration').value = "24";
