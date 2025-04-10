@@ -393,7 +393,7 @@ function checkForRiskEvent() {
     for (var i = 0; i < shuffledRisks.length; i++) {
         var risk = shuffledRisks[i];
         if (!risk.occurred) {
-            var probability = risk.likelihood / 5;
+            var probability = risk.likelihood / 50;
             if (Math.random() < probability) {
                 risk.occurred = true;
                 return risk;
