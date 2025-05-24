@@ -44,9 +44,9 @@ h2, h3 {
 }
 
 #header-img {
-    width: 100%;
+    width: 60%;
     margin: auto;
-    padding: 10px;
+    padding: 5px;
 }
 
 .btn {
@@ -159,6 +159,16 @@ th {
     border-radius: 5px;
 }
 
+.edit-button {
+    padding: 5px 10px;
+    background: #008CBA;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+
 #result {
     margin-top: 20px;
 }
@@ -196,13 +206,13 @@ th {
 }
 
 .game-description {
-    text-align: center;
-    font-family: 'Roboto Condensed', sans-serif;
+    text-align: center; 
+    font-family: Roboto Condensed, sans-serif; 
     font-optical-sizing: auto;
-    font-weight: 400;
-    font-style: normal;
+    font-weight:400; 
+    font-style:normal;
     padding: 10px;
-    width: 90%;
+    width:600px;
     margin: auto;
 }
 
@@ -294,16 +304,20 @@ th {
 }
 
 .table-container {
-    display: table;
-    margin: 0 auto;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 10px;
     width: 100%;
+    max-width: 400px;         
 }
 
 .table-row {
-    display: table-row;
-    text-align: center;
+    display: flex;
+    width: 100%;              
+    max-width: 500px;          
+    margin-bottom: 8px;
+    justify-content: center;
 }
 
 .table-cell {
@@ -369,12 +383,13 @@ th {
 .modal-content {
     background-color: #fefefe;
     margin: 5% auto;
-    padding: 20px;
+    padding: 30px;
     border: 1px solid #888;
     width: 80%;
     border-radius: 10px;
     max-height: 80vh;
     overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .close {
@@ -383,6 +398,7 @@ th {
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
+    transition: color 0.3s;
 }
 
 .close:hover,
@@ -391,37 +407,262 @@ th {
     text-decoration: none;
 }
 
-.performance-log{
-    color: darkgoldenrod;
-    list-style: none;
-    margin-top: 20px;
+.header-container {
+    background: linear-gradient(135deg, #3498db, #9b59b6, #e91e63);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
     margin-bottom: 20px;
-}
-
-#finalResult {
     text-align: center;
 }
 
-#finalResult img {
-    max-width: 20%;
-    height: auto;
-    margin-top: 20px;
-    margin-left: 0;
-    display: inline-block;
-}
-
-.result-title {
-    font-size: 2.5em; /* Larger title */
+.section {
     margin-bottom: 20px;
 }
 
+.step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    color: white;
+    border-radius: 50%;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.blue-circle {
+    background-color: #3498db;
+}
+
+.purple-circle {
+    background-color: #9b59b6;
+}
+
+.pink-circle {
+    background-color: #e91e63;
+}
+
+.step-title {
+    display: inline-block;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.tip-container {
+    background-color: #e8f4f8;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+.tip-title {
+    color: #2980b9;
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.risk-table {
+    width: auto; 
+    max-width: 600px;
+    border-collapse: collapse;
+    margin: 15px 0;
+}
+
+.risk-table th {
+    background-color: #3498db;
+    color: white;
+    padding: 10px;
+    text-align: left;
+}
+
+.risk-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.risk-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.scoring-card {
+    padding: 10px 15px;
+    margin: 10px 0;
+}
+
+.icon {
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+ul li, ol li {
+    margin-bottom: 8px;
+}
+
+ol.custom-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.purple-table th {
+    background-color: #9b59b6;
+}
+
+.pink-table th {
+    background-color: #e91e63;
+}
+
+.table-container {
+    display: table;
+    margin: 0 auto;
+    text-align: center;
+    padding: 10px;
+    width: 100%;
+}
+
+.performance-log-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+.performance-log-table {
+    border-collapse: collapse;
+    width: 90%;
+    max-width: 800px;
+    color: #333;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    background-color: #ffffff; 
+    border: 1px solid #ccc;
+}
+
+.performance-log-table th {
+    background-color: #3498db; 
+    color: white;
+    font-weight: bold;
+    padding: 12px;
+    text-align: center;
+}
+
+.performance-log-table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+}
+
+.performance-log-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.performance-log-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.result-title {
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
 .result-names {
-    margin: 20px 0;
+    margin-bottom: 20px;
 }
 
 .big-name {
-    font-size: 1.8em; /* Big and clear text for names */
-    font-weight: bold;
-    color: #333; /* Darker color for clarity */
+    font-size: 1.2em;
     margin: 10px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.label-text {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.value-text {
+    color: #2980b9;
+}
+
+@media print {
+    #helpButton, .modal, .button-action:not(:last-child), #gameBackButton {
+        display: none !important;
+    }
+    #finalResult {
+        text-align: center;
+    }
+    .container {
+        box-shadow: none;
+        margin: 0;
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        width: 90%;
+        padding: 20px;
+    }
+    .form-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .form-row label,
+    .form-row input,
+    .form-row select {
+        width: 100%;
+        text-align: left;
+    }
+    .form-row label {
+        margin-bottom: 5px;
+    }
+    .progress-bar {
+        width: 100%;
+    }
+    #charts canvas {
+        width: 100% !important;
+        max-width: 300px;
+    }
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+    }
+    .performance-log-table {
+        width: 100%;
+        font-size: 0.9em;
+    }
+    #header-img {
+        width: 80%;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .container {
+        padding: 15px;
+    }
+    h1, h2, h3 {
+        font-size: 1.2em;
+    }
+    .button-action {
+        padding: 10px;
+        font-size: 0.9em;
+    }
+    table th, table td {
+        font-size: 0.8em;
+        padding: 5px;
+    }
+    .progress-label {
+        width: 100px;
+        font-size: 0.9em;
+    }
+    #finalResult img {
+        max-width: 50%;
+    }
 }
