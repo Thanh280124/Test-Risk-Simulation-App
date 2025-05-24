@@ -347,7 +347,7 @@ function updateRiskTable() {
             <td>${risk.score}</td>
             <td class="${riskLevelClass}">${risk.level}</td>
             <td class="left-align">${risk.responseDescription}</td>
-            <td>
+            <td class ="action-buttons">
                 <i class="fas fa-pencil-alt edit-button" onclick="editRisk(${index})"></i>
                 <i class="fas fa-trash remove-button" onclick="removeRisk(${index})"></i>
             </td>

@@ -141,7 +141,6 @@ table {
 }
 
 th, td {
-    border: 1px solid #dddddd;
     padding: 8px;
     text-align: center;
 }
@@ -589,6 +588,12 @@ ol.custom-list {
 
 .value-text {
     color: #2980b9;
+}
+
+.action-buttons{
+    display: flex;
+    justify-content: center;
+ margin-top: 20px;
 }
 
 @media print {
